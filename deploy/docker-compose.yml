@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ../backend
+    container_name: backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=orders
+      - REDIS_HOST=redis
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build: ../frontend
+    container_name: frontend
+    stdin_open: true
+    ports:
+      - "3000:80"
+
+  nginx:
+    build: ../nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=orders
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
