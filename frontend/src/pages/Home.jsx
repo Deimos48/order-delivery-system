@@ -10,10 +10,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="page">
-      <h1>Каталог товаров</h1>
+    <div style={{ padding: 20 }}>
+      <h1>Каталог</h1>
 
-      <div className="grid">
+      <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
         {products.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}

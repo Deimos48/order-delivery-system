@@ -11,23 +11,26 @@ export default function Cart() {
     clearCart();
   };
 
+  const total = cart.reduce((sum, p) => sum + p.price, 0);
+
   return (
-    <div className="page">
+    <div style={{ padding: 20 }}>
       <h1>Корзина</h1>
 
-      {cart.length === 0 ? <p>Корзина пуста.</p> : null}
+      {cart.length === 0 ? <p>Корзина пуста</p> : null}
 
       {cart.map((item) => (
-        <div key={item.id} className="cart-item">
-          <p>{item.title}</p>
+        <div key={item.id} style={{ marginBottom: 10 }}>
+          {item.title} — {item.price} ₽
           <button onClick={() => removeFromCart(item.id)}>Удалить</button>
         </div>
       ))}
 
       {cart.length > 0 && (
-        <button className="checkout" onClick={checkout}>
-          Оформить заказ
-        </button>
+        <>
+          <h3>Итого: {total} ₽</h3>
+          <button onClick={checkout}>Оформить заказ</button>
+        </>
       )}
     </div>
   );
