@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS orders (
 
 -- Наполнение таблицы products тестовыми данными
 INSERT INTO products (name, description, price, image_url) VALUES
-('Пицца Маргарита', 'Классическая пицца с томатами и моцареллой', 550.00, 'https://via.placeholder.com/300x200?text=Маргарита'),
+('Пицца Маргарита', 'Классическая пицца с томатами и моцареллой', 550.00, 'https://the-cafe.ru/wp-content/uploads/2020/11/147c3814bbb34a77afdbc66e9ef20ed7_584x584.jpeg'),
 ('Пепперони', 'Острая пицца с колбасой пепперони', 620.00, 'https://via.placeholder.com/300x200?text=Пепперони'),
 ('Карбонара', 'Сливочный соус, бекон, сыр', 640.00, 'https://via.placeholder.com/300x200?text=Карбонара'),
 ('Суши сет', 'Ассорти роллов и суши', 890.00, 'https://via.placeholder.com/300x200?text=Суши+сет'),

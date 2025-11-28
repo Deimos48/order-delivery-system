@@ -1,36 +1,25 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-async function request(path, options = {}) {
-  const res = await fetch(`${API_URL}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    ...options,
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Request failed with status ${res.status}`);
-  }
-
-  return res.json();
+export async function getProducts() {
+  const res = await fetch(`${API_URL}/products`);
+  return await res.json();
 }
 
-export function getProducts() {
-  return request("/products");
+export async function getProduct(id) {
+  const res = await fetch(`${API_URL}/products/${id}`);
+  return await res.json();
 }
 
-export function getProduct(id) {
-  return request(`/products/${id}`);
-}
-
-export function createOrder(payload) {
-  return request("/orders", {
+export async function createOrder(orderData) {
+  const res = await fetch(`${API_URL}/orders`, {
     method: "POST",
-    body: JSON.stringify(payload),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(orderData),
   });
+  return await res.json();
 }
 
-export function getOrders() {
-  return request("/orders");
+export async function getOrders() {
+  const res = await fetch(`${API_URL}/orders`);
+  return await res.json();
 }

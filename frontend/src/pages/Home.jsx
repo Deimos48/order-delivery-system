@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getProducts } from "../api/api";
 import ProductCard from "../components/ProductCard";
-
+import "./Home.css"; // <<< добавь этот файл
 export default function Home() {
   const [products, setProducts] = useState([]);
 
@@ -10,10 +10,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Каталог</h1>
+    <div className="home-container">
+      <h1 className="home-title">Каталог товаров</h1>
 
-      <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+      <div className="products-grid">
         {products.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}

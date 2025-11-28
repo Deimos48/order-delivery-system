@@ -3,28 +3,29 @@ import { useParams } from "react-router-dom";
 import { getProduct } from "../api/api";
 import { CartContext } from "../context/CartContext";
 
-export default function Product() {
+export default function ProductPage() {
   const { id } = useParams();
-  const { addToCart } = useContext(CartContext);
-
   const [product, setProduct] = useState(null);
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     getProduct(id).then(setProduct);
-  }, []);
+  }, [id]);
 
-  if (!product) return <p>Загрузка...</p>;
+  if (!product) return <div>Загрузка...</div>;
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>{product.title}</h1>
+    <div className="product-page">
+      <img src={product.image_url} alt={product.name} />
 
-      <img src={product.image} width={400} />
-
-      <p>Цена: {product.price} ₽</p>
+      <h2>{product.name}</h2>
       <p>{product.description}</p>
 
-      <button onClick={() => addToCart(product)}>Добавить в корзину</button>
+      <strong>{product.price} ₽</strong>
+
+      <button onClick={() => addToCart(product)}>
+        Добавить в корзину
+      </button>
     </div>
   );
 }
