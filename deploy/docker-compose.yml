@@ -1,16 +1,49 @@
 version: "3.9"
 
 services:
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: ods-frontend
+    # фронт собирается в статику и отдаётся своим nginx (внутренний)
+    expose:
+      - "80"
+    networks:
+      - app-net
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: ods-backend
+    environment:
+      PORT: 4000
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orders_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "4000:4000"
+    networks:
+      - app-net
+
   postgres:
     image: postgres:16-alpine
     container_name: ods-postgres
     environment:
+      POSTGRES_DB: orders_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: orders_db
     volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./db:/docker-entrypoint-initdb.d:ro
+      - pg-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
@@ -24,33 +57,22 @@ services:
     networks:
       - app-net
 
-  backend:
+  nginx:
     build:
-      context: ../backend
-    container_name: ods-backend
-    env_file:
-      - ../backend/.env
-    depends_on:
-      - postgres
-      - redis
+      context: ../nginx
+      dockerfile: Dockerfile
+    container_name: ods-nginx
     ports:
-      - "4000:4000"
-    networks:
-      - app-net
-
-  frontend:
-    build:
-      context: ../frontend
-    container_name: ods-frontend
+      - "80:80"
     depends_on:
+      - frontend
       - backend
-    ports:
-      - "3000:80"
     networks:
       - app-net
 
 networks:
   app-net:
+    driver: bridge
 
 volumes:
-  db_data:
+  pg-data:
