@@ -1,0 +1,79 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install backend deps
+        run: |
+          cd backend
+          npm ci
+
+      - name: Lint backend
+        run: |
+          cd backend
+          npm run lint || true
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm test --if-present
+
+  frontend-test:
+    name: Frontend Build + Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend deps
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Lint frontend
+        run: |
+          cd frontend
+          npm run lint || true
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t backend-test ./backend
+
+      - name: Build frontend image
+        run: docker build -t frontend-test ./frontend
+
+      - name: Build compose stack
+        run: |
+          docker compose -f deploy/docker-compose.yml config
