@@ -34,7 +34,7 @@ jobs:
           cd backend
           npm test --if-present
 
-    frontend-test:
+  frontend-test:
     name: Frontend Build + Lint
     runs-on: ubuntu-latest
 
