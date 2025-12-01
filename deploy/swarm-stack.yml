@@ -5,8 +5,6 @@ services:
     image: deimos6661313/ods-frontend:latest
     deploy:
       replicas: 2
-      restart_policy:
-        condition: on-failure
     networks:
       - app-net
 
@@ -23,8 +21,6 @@ services:
       PORT: 4000
     deploy:
       replicas: 2
-      restart_policy:
-        condition: on-failure
     networks:
       - app-net
 
@@ -36,6 +32,9 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - pg-data:/var/lib/postgresql/data
+    configs:
+      - source: db-init
+        target: /docker-entrypoint-initdb.d/init.sql
     deploy:
       placement:
         constraints:
@@ -56,14 +55,16 @@ services:
       - "80:80"
     deploy:
       replicas: 2
-      restart_policy:
-        condition: on-failure
     networks:
       - app-net
-
-volumes:
-  pg-data:
 
 networks:
   app-net:
     driver: overlay
+
+volumes:
+  pg-data:
+
+configs:
+  db-init:
+    file: ./db/init.sql
