@@ -18,6 +18,8 @@ export default function App() {
           <Route path="/product/:id" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/track" element={<TrackOrder />} />
         </Routes>
       </BrowserRouter>
     </CartProvider>
