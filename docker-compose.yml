@@ -3,10 +3,9 @@ version: "3.9"
 services:
   frontend:
     build:
-      context: ../frontend
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: ods-frontend
-    # фронт собирается в статику и отдаётся своим nginx (внутренний)
     expose:
       - "80"
     networks:
@@ -14,7 +13,7 @@ services:
 
   backend:
     build:
-      context: ../backend
+      context: ./backend
       dockerfile: Dockerfile
     container_name: ods-backend
     environment:
@@ -42,7 +41,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./db:/docker-entrypoint-initdb.d:ro
+      - ./deploy/db:/docker-entrypoint-initdb.d:ro
       - pg-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
@@ -58,8 +57,9 @@ services:
       - app-net
 
   nginx:
+    image: ods-nginx:local
     build:
-      context: ../nginx
+      context: ./nginx
       dockerfile: Dockerfile
     container_name: ods-nginx
     ports:

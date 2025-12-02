@@ -1,68 +1,58 @@
-const ProductModel = require('../models/ProductModel');
+const db = require('../db');
 
-const ProductController = {
-  async getAllProducts(req, res, next) {
-    try {
-      const products = await ProductModel.getAll();
-
-      const mapped = products.map(p => ({
-        id: p.id,
-        title: p.name,
-        description: p.description,
-        price: p.price,
-        image: p.image_url
-      }));
-
-      res.json(mapped);
-    } catch (err) {
-      next(err);
-    }
+const ProductModel = {
+  async getAll() {
+    const result = await db.query(
+      `SELECT id, name, description, price, image_url
+       FROM products
+       ORDER BY id`
+    );
+    return result.rows;
   },
 
-  async getProductById(req, res, next) {
-    try {
-      const p = await ProductModel.getById(req.params.id);
-
-      if (!p) return res.status(404).json({ message: 'Not found' });
-
-      res.json({
-        id: p.id,
-        title: p.name,
-        description: p.description,
-        price: p.price,
-        image: p.image_url
-      });
-    } catch (err) {
-      next(err);
-    }
+  async getById(id) {
+    const result = await db.query(
+      `SELECT id, name, description, price, image_url
+       FROM products
+       WHERE id = $1`,
+      [id]
+    );
+    return result.rows[0] || null;
   },
 
-  async createProduct(req, res, next) {
-    try {
-      const product = await ProductModel.create(req.body);
-      res.status(201).json(product);
-    } catch (err) {
-      next(err);
-    }
+  async create({ name, description, price, imageUrl }) {
+    const result = await db.query(
+      `INSERT INTO products (name, description, price, image_url)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, name, description, price, image_url`,
+      [name, description || '', price, imageUrl || null]
+    );
+    return result.rows[0];
   },
 
-  async updateProduct(req, res, next) {
-    try {
-      const product = await ProductModel.update(req.params.id, req.body);
-      res.json(product);
-    } catch (err) {
-      next(err);
-    }
+  async update(id, { name, description, price, imageUrl }) {
+    const result = await db.query(
+      `UPDATE products
+       SET name = $1,
+           description = $2,
+           price = $3,
+           image_url = $4
+       WHERE id = $5
+       RETURNING id, name, description, price, image_url`,
+      [name, description || '', price, imageUrl || null, id]
+    );
+    return result.rows[0] || null;
   },
 
-  async deleteProduct(req, res, next) {
-    try {
-      await ProductModel.remove(req.params.id);
-      res.json({ success: true });
-    } catch (err) {
-      next(err);
-    }
+  async remove(id) {
+    const result = await db.query(
+      `DELETE FROM products
+       WHERE id = $1
+       RETURNING id`,
+      [id]
+    );
+    return result.rowCount > 0;
   }
 };
 
-module.exports = ProductController;
+module.exports = ProductModel;

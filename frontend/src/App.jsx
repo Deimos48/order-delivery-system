@@ -6,6 +6,9 @@ import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Orders from "./pages/Orders";
 import Header from "./components/Header";
+import Profile from "./pages/Profile";
+import TrackOrder from "./pages/TrackOrder";
+
 
 export default function App() {
   return (
