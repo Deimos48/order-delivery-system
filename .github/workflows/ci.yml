@@ -76,4 +76,4 @@ jobs:
 
       - name: Build compose stack
         run: |
-          docker compose -f deploy/docker-compose.yml config
+          docker compose -f docker-compose.yml config
