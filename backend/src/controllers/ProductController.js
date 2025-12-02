@@ -1,4 +1,4 @@
-const ProductModel = require('../model/ProductModel');
+const ProductModel = require('../models/ProductModel');
 const redisClient = require('../redis/client');
 
 const CACHE_KEY_ALL = 'products:all';
